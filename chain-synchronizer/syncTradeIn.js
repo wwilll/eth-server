@@ -8,6 +8,8 @@ const sleep = ms => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+let i = 0;
+
 let maxBlockDiff = config.max_block_diff;
 
 //获取链上区块高度
@@ -36,11 +38,14 @@ let throughBlock = async () => {
     } else {
         startHeight = localHeight + 1;
     }
+    let promiseList = [];
     for (let i = startHeight; i <= chainHeight; i++) {
         // console.log('开始遍历区块' + i, Date.now());
-        await getBlockInfo(i);
+        promiseList.push(getBlockInfo(i));
+        // await getBlockInfo(i);
         // console.log('成功遍历区块' + i, Date.now());
     }
+    await Promise.all(promiseList);
 }
 
 //获取指定区块的信息
@@ -49,10 +54,13 @@ let getBlockInfo = async (blockNum) => {
     if (!res) throw '获取链上指定区块信息失败';
     // console.log('获取链上指定区块信息', Date.now());
     let transaction = res.transactions;
+    let promiseList = [];
     for (let i = 0; i < transaction.length; i++) {
-        await getTransactions(transaction[i], blockNum);
+        promiseList.push(getTransactions(transaction[i], blockNum));
+        // await getTransactions(transaction[i], blockNum);
         // console.log('获取交易信息', Date.now());
     }
+    await Promise.all(promiseList);
     await db.o.info.findOneAndUpdate({key: 'blockHeight'}, {$set: {'value': blockNum}});
     // console.log('所有交易拉取成功，更新本地高度', Date.now());
 }
@@ -61,7 +69,7 @@ let getBlockInfo = async (blockNum) => {
 async function getTransactions (txh) {
     let res = await web3.eth.getTransaction(txh);
     if (!res) throw '获取交易信息失败';
-    // console.log('获取交易信息成功', Date.now());
+    console.log('获取交易信息成功' + i++ + txh, Date.now());
     if (res.to === mainWallet) {
         let r = await db.o.tradeIn.create(res);
         if (!r) throw '交易信息写入不成功';

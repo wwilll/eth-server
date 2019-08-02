@@ -11,12 +11,12 @@ const cron = '*/' + config.sync_time + ' * * * *';
 let sync = async () => {
     if (lock) return;
     lock = true;
-    console.log('开始同步', Date.now());
+    console.log('开始同步', global.getTime());
     Promise.all([
         syncTradeIn.start()
     ]).then(() => {
         lock = false;
-        console.log('同步成功...', Date.now());
+        console.log('同步成功...', global.getTime());
     }).catch(err => {
         log.warn(err);
         console.log('同步失败...');
