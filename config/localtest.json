@@ -1,0 +1,24 @@
+{
+    "name": "eth-server",
+    "version": "0.0.1",
+    "host": "",
+    "default_notify_uri": "",
+    "mongo": {
+      "url": "mongodb://127.0.0.1:27017/eth",
+      "options": {
+        "poolSize": 5,
+        "useNewUrlParser": true,
+        "useCreateIndex": true,
+        "useFindAndModify": false
+      }
+    },
+    "eth_node": {
+      "chain_id": 4,
+      "network": "mainnet",
+      "uri": "https://mainnet.infura.io/v3/64022d3a107f4e288ab2d1a7b927a283",
+      "max_block_diff": 2,
+      "main_wallet": "",
+      "sync_time": 2 
+    }
+}
+  
