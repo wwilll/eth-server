@@ -1,4 +1,5 @@
 const web3 = require('./web3').web3;
+const log = require('../log').fileLogger;
 const config = require('../config')['eth_node'];
 const db = require('../database/mongoose');
 let mainWallet = config.main_wallet;
@@ -8,7 +9,7 @@ const sleep = ms => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-let i = 0;
+let iii = 0;
 
 let maxBlockDiff = config.max_block_diff;
 
@@ -69,7 +70,7 @@ let getBlockInfo = async (blockNum) => {
 async function getTransactions (txh) {
     let res = await web3.eth.getTransaction(txh);
     if (!res) throw '获取交易信息失败';
-    console.log('获取交易信息成功' + i++ + txh, Date.now());
+    console.log('获取交易信息成功' + iii++ + txh, Date.now());
     if (res.to === mainWallet) {
         let r = await db.o.tradeIn.create(res);
         if (!r) throw '交易信息写入不成功';
@@ -77,8 +78,25 @@ async function getTransactions (txh) {
     }
 }
 
-let start = async () => {
-    await throughBlock();
-}
+let syncTradeIn = (function() {
+    let lock = false;
+    return async () => {
+        if (lock) return;
+        lock = true;
+        console.log('开始同步', global.getTime());
+        Promise.all([
+            throughBlock()
 
-this.start = start;
+
+        ]).then(() => {
+            lock = false;
+            console.log('同步成功...', global.getTime());
+        }).catch(err => {
+            log.warn(err);
+            console.log('同步失败...', global.getTime());
+            lock = false;
+        });
+    }
+})();
+
+module.exports = syncTradeIn;
