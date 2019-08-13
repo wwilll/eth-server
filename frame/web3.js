@@ -1,4 +1,3 @@
-
 const details = require('../config')['eth_node']
 
 const uri = details['uri']

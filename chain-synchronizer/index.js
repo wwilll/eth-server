@@ -3,17 +3,21 @@ const syncTradeIn = require('./syncTradeIn');
 const syncIgnore = require('./syncIgnore');
 const config = require('../config')['eth_node'];
 //define task
-let job;
+let tradeInJob;
+const tradeInInterval = '*/' + config.sync_time + ' * * * *';
 
-const cron = '*/' + config.sync_time + ' * * * *';
+let ignoreJob;
+const ignoreInterval = '*/30 * * * *';
 
 //start task
 this.start = () => {
+    syncTradeIn();
+    tradeInJob = schedule.scheduleJob(tradeInInterval, syncTradeIn);
     syncIgnore();
-    // syncTradeIn();
-    // job = schedule.scheduleJob(cron, syncTradeIn);
+    ignoreJob = schedule.scheduleJob(ignoreInterval, syncIgnore);
 }
 
 this.stop = () => {
-    job.cancel();
+    tradeInJob.cancel();
+    ignoreJob.cancel();
 }

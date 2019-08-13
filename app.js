@@ -5,7 +5,7 @@ const chainSynchronizer = require('./chain-synchronizer');
 const start = async () => {
     await frame.init();
     router.init();
-    chainSynchronizer.start();
+    // chainSynchronizer.start();
 }
 
 start();

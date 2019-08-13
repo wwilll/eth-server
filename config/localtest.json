@@ -17,7 +17,7 @@
       "network": "mainnet",
       "uri": "https://mainnet.infura.io/v3/64022d3a107f4e288ab2d1a7b927a283",
       "max_block_diff": 20,
-      "main_wallet": "",
+      "main_wallet": "0x742d35cc6634c0532925a3b844bc454e4438f44e",
       "sync_time": 2
     }
 }

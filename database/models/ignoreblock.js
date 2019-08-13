@@ -6,7 +6,7 @@ const Schema = mongoose.Schema
 
 const ignoreblock = new Schema({
   start: Number,
-  stop: Number
+  end: Number
 })
 
 const Model = mongoose.model('ignoreblock', ignoreblock, 'ignoreblock')
